@@ -1,0 +1,48 @@
+LabTopic:App Dev: Setting up a Development Environment v1.1
+Objectives
+............................................................
+
+Provision a Google Compute Engine instance.
+
+Connect to the instance using SSH.
+
+Install software on the instance.
+
+Verify the software installation.
+.........................................................
+
+// Creating a Compute Engine Virtual Machine Instance.
+gcloud config set project PROJECT_ID
+gcloud compute instances create dev-instance --zone=us-central1-a --machine-type=e2-medium --subnet=default --tags=http-server,https-server --image=debian-9-stretch-v20200902 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=dev-instance 
+
+gcloud compute firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server
+
+// Install software on the VM instance
+//activate your ssh in the gcloud commandline tool
+gcloud beta compute ssh --zone "us-central1-a" "dev-instance" 
+//update the Debian package list
+sudo apt-get update
+//install Git
+sudo apt-get install git
+//download the Node.js setup script
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+// install npm and Node.js
+sudo apt install nodejs
+
+//clone the class repository
+git clone https://github.com/GoogleCloudPlatform/training-data-analyst
+//change the working directory
+cd ~/training-data-analyst/courses/developingapps/nodejs/devenv/
+//run a simple web server
+sudo node server/app.js
+
+//stop the server 
+Ctrl+C
+//install the Node.js library for Compute Engine
+npm install
+
+
+//run a simple Node.js application that lists Compute Engine instances
+node list-gce-instances.js
+
+		
